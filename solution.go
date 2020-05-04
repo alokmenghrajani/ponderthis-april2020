@@ -284,15 +284,17 @@ func (g *graph) printMatrix() {
 
 // Compute using dynamic programming.
 func (g *graph) computeDP(days uint, rate float64, firstResultOnly bool) []float64 {
-	// Build a table with 256 * (days+1) entries.
-	probs := make([]float64, 256 * (days + 1))
-
 	lastState := (1 << g.size)-1
+
+	// Build a table with 256 * (days+1) entries. We could actually make this smaller (lastState * days-1) but
+	// the size we picked is a little more convenient.
+	probs := make([][256]float64, days + 1)
+
 	// fill the base case
 	for state:=0; state<lastState; state++ {
-		probs[state] = 0.0
+		probs[0][state] = 0.0
 	}
-	probs[lastState] = 1.0
+	probs[0][lastState] = 1.0
 
 	// compute the mapping of state => nextStates
 	m := make(map[int][]stateProbability)
@@ -306,9 +308,9 @@ func (g *graph) computeDP(days uint, rate float64, firstResultOnly bool) []float
 		for state:=0; state<=lastState; state++ {
 			p := 0.0
 			for _, nextState := range m[state] {
-				p += nextState.probability * probs[256 * int(i - 1) + int(nextState.state)]
+				p += nextState.probability * probs[i - 1][nextState.state]
 			}
-			probs[256 * int(i) + state] = p
+			probs[i][state] = p
 		}
 	}
 
@@ -317,7 +319,7 @@ func (g *graph) computeDP(days uint, rate float64, firstResultOnly bool) []float
 	for i := uint8(0); i < g.size; i++ {
 		var initialState bitvector.Len8
 		initialState = initialState.Set(i, true)
-		p := probs[256 * int(days) + int(initialState)]
+		p := probs[days][initialState]
 		r = append(r, p)
 		if firstResultOnly {
 			break

@@ -223,11 +223,7 @@ func solve() {
 				}
 			}
 		}
-
-		if g.vertices == 4327545287617835048 {
-			fmt.Println("HERE")
-		}
-
+		
 		r := compute(g, args.Solve.Algorithm, args.Solve.Days, args.Solve.Rate, false)
 		for i, v := range r {
 			if math.Abs(v-args.Solve.Target) < math.Abs(bestValue-args.Solve.Target) && math.Abs(v-args.Solve.Target) < 0.00005 {

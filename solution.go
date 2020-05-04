@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/alecthomas/kong"
 	"github.com/teivah/bitvector"
-	"gonum.org/v1/gonum/graph/encoding/graph6"
 	"io"
 	"log"
 	"math"
@@ -208,22 +207,8 @@ func solve() {
 			log.Panic(err)
 		}
 		line = strings.TrimSuffix(line, "\n")
+		g := parseMatrix(line)
 
-		// convert string to graph6.Graph
-		g6 := graph6.Graph(line)
-		if !graph6.IsValid(g6) {
-			log.Panicf("invalid graph6: %s", line)
-		}
-		// convert g6 to our graph
-		g := graph{size: uint8(g6.Nodes().Len())}
-		for i := uint8(0); i < g.size; i++ {
-			for j := uint8(0); j < g.size; j++ {
-				if g6.HasEdgeBetween(int64(i), int64(j)) {
-					g.addEdge(i, j)
-				}
-			}
-		}
-		
 		r := compute(g, args.Solve.Algorithm, args.Solve.Days, args.Solve.Rate, false)
 		for i, v := range r {
 			if math.Abs(v-args.Solve.Target) < math.Abs(bestValue-args.Solve.Target) && math.Abs(v-args.Solve.Target) < 0.00005 {

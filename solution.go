@@ -235,7 +235,7 @@ func solve() {
 				bestValue = v
 				bestGraph = graph{size: g.size, vertices: g.vertices}
 				bestGraph.pivot(uint8(i))
-				bestGraph.printMatrix()
+				fmt.Println(bestGraph)
 			}
 		}
 		linesProcessed++
@@ -243,7 +243,7 @@ func solve() {
 		fmt.Printf("best: %g, eta: %s\n", bestValue, time.Duration(timeLeft)*time.Millisecond)
 	}
 	fmt.Println("best solution")
-	bestGraph.printMatrix()
+	fmt.Println(bestGraph)
 }
 
 // Transform g.vertices so that infected vertex becomes the first vertex.
@@ -269,17 +269,19 @@ func (g *graph) pivot(infected uint8) {
 	}
 }
 
-func (g *graph) printMatrix() {
+func (g graph) String() string {
+	var r strings.Builder
 	for i := byte(0); i < g.size; i++ {
 		for j := byte(0); j < g.size; j++ {
 			if g.hasEdge(i, j) {
-				fmt.Printf("1")
+				fmt.Fprintf(&r, "1")
 			} else {
-				fmt.Printf("0")
+				fmt.Fprintf(&r, "0")
 			}
 		}
-		fmt.Println("")
+		fmt.Fprintln(&r,"")
 	}
+	return r.String()
 }
 
 // Compute using dynamic programming.

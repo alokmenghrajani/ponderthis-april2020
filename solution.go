@@ -14,7 +14,7 @@ import (
 )
 
 // Solver for IBM Ponder This - April 2020 (COVID-19 outbreak) challenge.
-// See <TODO> for writeup.
+// See https://quaxio.com/ponder_this_april_2020_writeup/ for writeup.
 
 var args struct {
 	Compute struct {
